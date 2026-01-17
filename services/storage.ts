@@ -1,13 +1,13 @@
 import { Project, Service, Review, Booking, ContactInquiry } from '../types';
 import { INITIAL_PROJECTS, INITIAL_SERVICES, INITIAL_REVIEWS } from '../constants';
 
-// Updated keys to v8 to strictly force fresh data load and clear old images
+// Updated keys to v11 to strictly force fresh data load and clear old images
 const KEYS = {
-  PROJECTS: 'br_projects_v8',
-  SERVICES: 'br_services_v8',
-  REVIEWS: 'br_reviews_v8',
-  BOOKINGS: 'br_bookings_v8',
-  INQUIRIES: 'br_inquiries_v8'
+  PROJECTS: 'br_projects_v11',
+  SERVICES: 'br_services_v11',
+  REVIEWS: 'br_reviews_v11',
+  BOOKINGS: 'br_bookings_v11',
+  INQUIRIES: 'br_inquiries_v11'
 };
 
 const get = <T>(key: string, initial: T): T => {

@@ -159,10 +159,13 @@ const ProjectsManager = () => {
   };
 
   const generateAIContent = async () => {
-    if (!currentProject.title?.en) return alert("Please enter an English title first.");
+    // Fixed: Added safe access to title.en
+    const titleEn = currentProject.title?.en;
+    if (!titleEn) return alert("Please enter an English title first.");
+    
     setAiLoading(true);
-    const descEn = await generateDescription(currentProject.title.en, "construction, renovation, high quality", 'en');
-    const descEs = await generateDescription(currentProject.title.en, "construcción, renovación, alta calidad", 'es'); // Passing EN title for context usually works fine
+    const descEn = await generateDescription(titleEn, "construction, renovation, high quality", 'en');
+    const descEs = await generateDescription(titleEn, "construcción, renovación, alta calidad", 'es'); 
     
     setCurrentProject({
       ...currentProject,

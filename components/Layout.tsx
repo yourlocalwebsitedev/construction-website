@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Globe, Calendar, Facebook, Instagram, Twitter, Clock, ShieldCheck } from 'lucide-react';
+import { Menu, X, Phone, Globe, Calendar, Facebook, Instagram, Twitter, Clock, ShieldCheck, Award } from 'lucide-react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -151,7 +151,18 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
               <a href="#" className="hover:text-primary"><Twitter size={20} /></a>
             </div>
             <div className="mt-4 pt-4 border-t border-gray-700">
-               <img src="https://via.placeholder.com/150x40/334155/FFFFFF?text=BBB+Accredited" alt="Accreditation" className="opacity-80 grayscale hover:grayscale-0 transition-all" />
+               <div className="flex flex-col sm:flex-row items-start gap-3">
+                  {/* Badge 1: Accredited Business */}
+                  <div className="bg-white py-1.5 px-3 rounded shadow-sm flex items-center gap-2 select-none hover:scale-105 transition-transform duration-200">
+                     <div className="bg-slate-800 text-white p-1 rounded-full">
+                       <Award size={14} />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className="text-[9px] text-gray-500 uppercase font-bold leading-none">Accredited</span>
+                       <span className="text-xs font-bold text-slate-900 leading-none mt-0.5">BUSINESS</span>
+                     </div>
+                  </div>
+               </div>
             </div>
           </div>
         </div>

@@ -9,8 +9,8 @@ export const INITIAL_SERVICES: Service[] = [
       es: 'Renovación completa de cocinas incluyendo demolición, instalación de gabinetes y plomería.'
     },
     category: ServiceCategory.RESIDENTIAL,
-    // Verified high-quality architectural kitchen image
-    imageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'
+    // Shows specific kitchen construction context (unfinished walls, installation)
+    imageUrl: 'https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 's2',
@@ -30,6 +30,7 @@ export const INITIAL_SERVICES: Service[] = [
       es: 'Demolición completa de baños, alicatado, instalación de accesorios y modernización.'
     },
     category: ServiceCategory.RESIDENTIAL,
+    // Kept as the high-quality finished bathroom image as requested
     imageUrl: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800&q=80'
   }
 ];
