@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { storageService } from '../services/storage';
 import { Service, Project, Review, Language, ServiceCategory } from '../types';
 import { TRANSLATIONS } from '../constants';
-import { Star, MapPin, ChevronRight, Upload, X, Shield, Award, Users, Hammer, CheckCircle } from 'lucide-react';
+import { Star, MapPin, ChevronRight, Upload, X, Shield, Award, Users, Hammer, CheckCircle, ShieldCheck, CalendarCheck, PenTool, Phone, Mail, MessageSquare, Check } from 'lucide-react';
 
 interface PageProps {
   language: Language;
@@ -23,67 +24,122 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
   return (
     <div>
       {/* Hero */}
-      <div className="relative h-[600px] bg-secondary flex items-center justify-center text-center px-4 overflow-hidden">
+      <div className="relative h-[650px] bg-secondary flex items-center justify-center text-center px-4 overflow-hidden">
         {/* Fixed: Used a highly reliable, standard construction architectural image */}
         <img 
-          src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1920&q=80" 
+          src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80" 
           alt="Construction background" 
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
-        <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight animate-fade-in-up">
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
+          <div className="inline-flex items-center bg-primary/20 backdrop-blur-sm border border-primary/40 rounded-full px-4 py-1 text-primary text-sm font-bold mb-4 animate-fade-in-up">
+            <ShieldCheck size={16} className="mr-2" /> {t.home.trust.licensed} #GC-9821
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight animate-fade-in-up drop-shadow-lg">
             {t.home.heroTitle}
           </h1>
-          <p className="text-xl text-gray-300">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto drop-shadow-md">
             {t.home.heroSubtitle}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-            <button 
+             <Link to="/contact" className="bg-primary hover:bg-amber-600 text-white font-bold py-4 px-10 rounded-full text-lg transition-transform hover:scale-105 shadow-lg shadow-primary/30 flex items-center justify-center">
+               {t.home.cta}
+             </Link>
+             <button 
               onClick={() => onBookClick?.()}
-              className="bg-primary hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform hover:scale-105"
+              className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold py-4 px-10 rounded-full text-lg transition-all"
             >
-              {t.home.cta}
+              {t.common.bookNow}
             </button>
           </div>
         </div>
       </div>
 
+      {/* Trust Bar */}
+      <div className="bg-primary text-secondary py-6 px-4 shadow-lg relative z-20 -mt-8 mx-4 md:mx-auto max-w-6xl rounded-xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-secondary/20">
+          <div className="flex items-center justify-center gap-3 p-2">
+            <ShieldCheck size={32} />
+            <div className="text-left">
+              <div className="font-bold text-lg leading-tight">{t.home.trust.licensed}</div>
+              <div className="text-xs opacity-80">General Contractor #GC-9821</div>
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-3 p-2">
+            <Award size={32} />
+            <div className="text-left">
+              <div className="font-bold text-lg leading-tight">{t.home.trust.warranty}</div>
+              <div className="text-xs opacity-80">On all structural work</div>
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-3 p-2">
+            <div className="flex text-secondary">
+               {[1,2,3,4,5].map(i => <Star key={i} size={16} fill="currentColor" />)}
+            </div>
+            <div className="text-left">
+              <div className="font-bold text-lg leading-tight">{t.home.trust.rating}</div>
+              <div className="text-xs opacity-80">Based on 150+ Reviews</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Featured Projects */}
-      <section className="py-16 px-4 max-w-7xl mx-auto">
+      <section className="py-20 px-4 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 border-b-4 border-primary w-max mx-auto pb-2">Featured Projects</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {projects.map(p => (
             <div key={p.id} className="group relative overflow-hidden rounded-xl shadow-lg cursor-pointer">
               <img src={p.images[0]} alt={p.title[language]} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-                <span className="text-primary text-xs font-bold uppercase tracking-wider">{p.category}</span>
-                <h3 className="text-white text-xl font-bold mt-1">{p.title[language]}</h3>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6">
+                <span className="text-primary text-xs font-bold uppercase tracking-wider mb-1 flex items-center">
+                  <Hammer size={12} className="mr-1"/> {p.category}
+                </span>
+                <h3 className="text-white text-xl font-bold mt-1 leading-tight">{p.title[language]}</h3>
               </div>
             </div>
           ))}
         </div>
         <div className="text-center mt-10">
-          <a href="#/portfolio" className="inline-flex items-center text-primary font-bold hover:underline">
+          <Link to="/portfolio" className="inline-flex items-center text-primary font-bold hover:underline">
             View All Projects <ChevronRight size={20} />
-          </a>
+          </Link>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="bg-gray-100 py-16 px-4">
+      <section className="bg-gray-100 py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Client Reviews</h2>
+          <div className="flex items-center justify-center mb-12 flex-col">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">What Our Clients Say</h2>
+            <div className="flex items-center gap-2 text-gray-600 bg-white px-4 py-2 rounded-full shadow-sm">
+               <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="w-5 h-5" alt="Google" />
+               <span className="font-bold text-gray-800">4.9</span>
+               <div className="flex text-amber-400">
+                  {[1,2,3,4,5].map(i => <Star key={i} size={14} fill="currentColor" />)}
+               </div>
+               <span className="text-xs text-gray-500">(152 Reviews)</span>
+            </div>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {reviews.map(r => (
-              <div key={r.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div key={r.id} className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow relative">
+                <div className="absolute top-6 right-6 text-gray-200">
+                   <MessageSquare size={40} />
+                </div>
                 <div className="flex text-primary mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={18} fill={i < r.rating ? "currentColor" : "none"} className={i < r.rating ? "text-primary" : "text-gray-300"} />
+                    <Star key={i} size={16} fill={i < r.rating ? "currentColor" : "none"} className={i < r.rating ? "text-primary" : "text-gray-300"} />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 italic">"{r.text[language]}"</p>
-                <div className="font-bold text-gray-800">{r.author}</div>
-                <div className="text-xs text-gray-400">{new Date(r.date).toLocaleDateString()}</div>
+                <p className="text-gray-600 mb-6 italic text-lg leading-relaxed">"{r.text[language]}"</p>
+                <div>
+                  <div className="font-bold text-gray-800">{r.author}</div>
+                  <div className="text-xs text-gray-400 flex items-center mt-1">
+                    <CheckCircle size={10} className="mr-1 text-green-500"/> Verified Client • {new Date(r.date).toLocaleDateString()}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -106,9 +162,10 @@ export const ServicesPage: React.FC<PageProps> = ({ language, onBookClick }) => 
       <h1 className="text-4xl font-bold mb-12 text-center">Our Services</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {services.map(service => (
-          <div key={service.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
-            <div className="h-48 overflow-hidden">
-              <img src={service.imageUrl} alt={service.title[language]} className="w-full h-full object-cover" />
+          <div key={service.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col group hover:shadow-xl transition-shadow">
+            <div className="h-56 overflow-hidden relative">
+              <img src={service.imageUrl} alt={service.title[language]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
             </div>
             <div className="p-6 flex-grow flex flex-col">
               <div className="flex items-center justify-between mb-2">
@@ -118,9 +175,9 @@ export const ServicesPage: React.FC<PageProps> = ({ language, onBookClick }) => 
               <p className="text-gray-600 mb-6 flex-grow">{service.description[language]}</p>
               <button 
                 onClick={() => onBookClick?.(service.id)}
-                className="w-full bg-secondary text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors"
+                className="w-full bg-secondary text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
               >
-                Book This Service
+                Book This Service <ChevronRight size={16} className="ml-2" />
               </button>
             </div>
           </div>
@@ -169,9 +226,10 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
           >
             <img src={project.images[0]} alt={project.title[language]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <div className="text-center text-white p-4">
+              <div className="text-center text-white p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform">
                 <h3 className="text-xl font-bold mb-2">{project.title[language]}</h3>
-                <p className="text-sm line-clamp-2">{project.description[language]}</p>
+                <p className="text-sm line-clamp-2 opacity-90">{project.description[language]}</p>
+                <span className="inline-block mt-3 text-primary text-sm font-bold border-b border-primary">View Project</span>
               </div>
             </div>
           </div>
@@ -180,26 +238,29 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
 
       {/* Project Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90" onClick={() => setSelectedProject(null)}>
-          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto no-scrollbar" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedProject(null)}>
+          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto no-scrollbar shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="relative h-64 sm:h-96">
               <img src={selectedProject.images[0]} className="w-full h-full object-cover" />
-              <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 bg-white/80 p-2 rounded-full hover:bg-white text-black"><X /></button>
+              <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 bg-white/90 p-2 rounded-full hover:bg-white text-black transition-colors shadow-lg"><X /></button>
             </div>
             <div className="p-8">
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-6 border-b border-gray-100 pb-4">
                 <div>
-                   <span className="text-primary font-bold text-sm uppercase tracking-wider">{selectedProject.category}</span>
-                   <h2 className="text-3xl font-bold mt-1">{selectedProject.title[language]}</h2>
+                   <span className="text-primary font-bold text-sm uppercase tracking-wider bg-primary/10 px-2 py-1 rounded-md">{selectedProject.category}</span>
+                   <h2 className="text-3xl font-bold mt-2 text-gray-800">{selectedProject.title[language]}</h2>
                 </div>
-                <div className="text-gray-500 text-sm">{selectedProject.completionDate}</div>
+                <div className="flex items-center text-gray-500 text-sm mt-2 sm:mt-0">
+                  <CalendarCheck size={16} className="mr-2" />
+                  Completed: {selectedProject.completionDate}
+                </div>
               </div>
               <p className="text-gray-700 leading-relaxed text-lg mb-8">{selectedProject.description[language]}</p>
               
-              <h4 className="font-bold mb-4 text-gray-800">Project Gallery</h4>
+              <h4 className="font-bold mb-4 text-gray-800 flex items-center"><PenTool size={16} className="mr-2"/> Project Gallery</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {selectedProject.images.map((img, i) => (
-                  <img key={i} src={img} className="rounded-lg h-24 w-full object-cover cursor-pointer hover:opacity-80" />
+                  <img key={i} src={img} className="rounded-lg h-24 w-full object-cover cursor-pointer hover:opacity-80 transition-opacity border border-gray-200" />
                 ))}
               </div>
             </div>
@@ -229,7 +290,7 @@ export const AboutPage: React.FC<PageProps> = ({ language }) => {
         <div className="flex flex-col md:flex-row gap-12 items-center">
           <div className="md:w-1/2">
             <img 
-              src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80" 
+              src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80" 
               alt="Construction planning" 
               className="rounded-2xl shadow-xl w-full h-[400px] object-cover" 
             />
@@ -262,7 +323,7 @@ export const AboutPage: React.FC<PageProps> = ({ language }) => {
             { label: t.stats.clients, val: '100%' },
             { label: t.stats.team, val: '45' },
           ].map((stat, i) => (
-            <div key={i} className="p-4">
+            <div key={i} className="p-4 border border-gray-700/30 rounded-lg bg-white/5">
               <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.val}</div>
               <div className="text-sm md:text-base font-medium uppercase tracking-wider opacity-80">{stat.label}</div>
             </div>
@@ -296,13 +357,23 @@ const ValueCard = ({ icon, title, desc }: { icon: React.ReactNode, title: string
 
 // --- CONTACT PAGE ---
 export const ContactPage: React.FC<PageProps> = ({ language }) => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const t = TRANSLATIONS[language].contact;
+  const common = TRANSLATIONS[language].common;
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    email: '', 
+    phone: '', 
+    zip: '', 
+    serviceType: '', 
+    timeline: '', 
+    preferredContact: 'phone', 
+    message: '' 
+  });
   const [file, setFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate submission
     const inquiry = {
       id: Date.now().toString(),
       ...formData,
@@ -311,124 +382,193 @@ export const ContactPage: React.FC<PageProps> = ({ language }) => {
     };
     storageService.addInquiry(inquiry as any);
     setSubmitted(true);
+    window.scrollTo(0,0);
   };
 
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-4">
-        <div className="bg-green-100 p-6 rounded-full text-green-600 mb-6"><Check size={48} /></div>
-        <h2 className="text-3xl font-bold mb-4">Message Sent!</h2>
-        <p className="text-gray-600 max-w-md">Thanks for reaching out. Our team will review your inquiry and photo(s) and get back to you within 24 hours.</p>
-        <button onClick={() => setSubmitted(false)} className="mt-8 text-primary font-bold hover:underline">Send another message</button>
+        <div className="bg-green-100 p-6 rounded-full text-green-600 mb-6 animate-bounce"><Check size={48} /></div>
+        <h2 className="text-3xl font-bold mb-4">Request Received!</h2>
+        <p className="text-gray-600 max-w-md text-lg">Thanks for trusting BuildRight. Our team will review your project details and get back to you within 2 hours.</p>
+        <button onClick={() => setSubmitted(false)} className="mt-8 text-primary font-bold hover:underline">Submit another inquiry</button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-16 px-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">Contact Us & Get a Quote</h1>
+    <div className="max-w-5xl mx-auto py-16 px-4">
+      <h1 className="text-4xl font-bold mb-2 text-center text-gray-800">{t.title}</h1>
+      <p className="text-center text-gray-500 mb-10">{t.subtitle}</p>
       
       {/* Contact & Form Section */}
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row mb-12">
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col lg:flex-row mb-12 border border-gray-100">
         
-        {/* Contact Info */}
-        <div className="bg-secondary text-white p-10 md:w-1/3 flex flex-col justify-between">
-          <div>
-            <h3 className="text-xl font-bold mb-6">Contact Info</h3>
-            <div className="space-y-6">
+        {/* Contact Info Sidebar */}
+        <div className="bg-secondary text-white p-10 lg:w-1/3 flex flex-col justify-between relative overflow-hidden">
+          {/* Decorative Pattern */}
+          <div className="absolute top-0 right-0 p-10 opacity-5">
+            <Hammer size={200} />
+          </div>
+
+          <div className="relative z-10">
+            <h3 className="text-xl font-bold mb-8 border-b border-gray-600 pb-4">Contact Info</h3>
+            <div className="space-y-8">
               <div className="flex items-start">
                 <MapPin className="mt-1 mr-4 shrink-0 text-primary" />
-                <p>225 N Cotner Blvd,<br/>Lincoln, NE 68505</p>
+                <div>
+                  <div className="font-bold text-sm text-gray-400 uppercase mb-1">Office</div>
+                  <p>225 N Cotner Blvd,<br/>Lincoln, NE 68505</p>
+                </div>
               </div>
-              <div className="flex items-center">
-                 <div className="w-6 mr-4 flex justify-center text-primary font-bold">@</div>
-                 <p>hello@buildright.com</p>
+              <div className="flex items-start">
+                 <Mail className="mt-1 mr-4 shrink-0 text-primary" />
+                 <div>
+                   <div className="font-bold text-sm text-gray-400 uppercase mb-1">Email</div>
+                   <p>hello@buildright.com</p>
+                 </div>
               </div>
-              <div className="flex items-center">
-                 <div className="w-6 mr-4 flex justify-center text-primary font-bold">#</div>
-                 <p>(555) 123-4567</p>
+              <div className="flex items-start">
+                 <Phone className="mt-1 mr-4 shrink-0 text-primary" />
+                 <div>
+                   <div className="font-bold text-sm text-gray-400 uppercase mb-1">Phone</div>
+                   <p className="text-xl font-bold">(555) 123-4567</p>
+                 </div>
               </div>
             </div>
           </div>
-          <div className="mt-12">
-            <h4 className="font-bold mb-4 text-primary">Service Areas</h4>
-            <div className="flex flex-wrap gap-2">
-              {['Downtown', 'Westside', 'North Hills', 'Suburbs'].map(area => (
-                <span key={area} className="bg-white/10 px-3 py-1 rounded-full text-xs">{area}</span>
-              ))}
+          
+          <div className="mt-12 relative z-10">
+            <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
+               <div className="flex items-center text-primary font-bold mb-2">
+                 <ShieldCheck size={18} className="mr-2"/> Licensed & Insured
+               </div>
+               <p className="text-xs text-gray-400">GC License #9821-NE</p>
             </div>
           </div>
         </div>
 
-        {/* Form */}
-        <div className="p-10 md:w-2/3">
+        {/* Detailed Form */}
+        <div className="p-8 lg:p-12 lg:w-2/3 bg-gray-50/50">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Name</label>
-                <input required type="text" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" 
-                  value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                <input required type="email" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" 
-                   value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
-                />
-              </div>
-            </div>
             
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Project Details</label>
-              <textarea required rows={4} className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" 
-                 value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})}
-                 placeholder="Describe your project, timeline, and budget..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Upload Photos (Optional)</label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors relative">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <div className="flex flex-col items-center pointer-events-none">
-                  <Upload className="text-gray-400 mb-2" size={32} />
-                  <span className="text-sm text-gray-500">{file ? file.name : "Click to upload or drag and drop"}</span>
+            {/* Personal Info */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+               <h4 className="font-bold text-gray-800 mb-4 flex items-center"><Users size={16} className="mr-2 text-primary"/> Personal Details</h4>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.name} *</label>
+                  <input required type="text" className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all" 
+                    value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.email} *</label>
+                  <input required type="email" className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all" 
+                    value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.phone} *</label>
+                  <input required type="tel" className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all" 
+                    value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.zip} *</label>
+                  <input required type="text" className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all" 
+                    value={formData.zip} onChange={e => setFormData({...formData, zip: e.target.value})}
+                  />
+                </div>
+              </div>
+              
+              <div className="mt-4">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{t.form.preferred}</label>
+                <div className="flex space-x-4">
+                  {(['phone', 'email', 'text'] as const).map((method) => (
+                    <label key={method} className="flex items-center cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="contactMethod"
+                        value={method}
+                        checked={formData.preferredContact === method}
+                        onChange={(e) => setFormData({...formData, preferredContact: e.target.value as any})}
+                        className="mr-2 text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-700 capitalize">
+                         {method === 'phone' ? t.form.methodOpts.call : method === 'email' ? t.form.methodOpts.email : t.form.methodOpts.text}
+                      </span>
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <button type="submit" className="w-full bg-primary text-white font-bold py-4 rounded-lg hover:bg-amber-600 transition-all shadow-lg">
-              Send Request
+            {/* Project Info */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+               <h4 className="font-bold text-gray-800 mb-4 flex items-center"><Hammer size={16} className="mr-2 text-primary"/> Project Information</h4>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                 <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.serviceType}</label>
+                    <select 
+                      className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all"
+                      value={formData.serviceType} onChange={e => setFormData({...formData, serviceType: e.target.value})}
+                    >
+                      <option value="">Select a Service...</option>
+                      <option value="kitchen">Kitchen Remodel</option>
+                      <option value="bathroom">Bathroom Renovation</option>
+                      <option value="roofing">Roofing</option>
+                      <option value="addition">Home Addition</option>
+                      <option value="commercial">Commercial Project</option>
+                      <option value="other">Other</option>
+                    </select>
+                 </div>
+                 <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.timeline}</label>
+                    <select 
+                      className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all"
+                      value={formData.timeline} onChange={e => setFormData({...formData, timeline: e.target.value})}
+                    >
+                      <option value="">When do you want to start?</option>
+                      <option value="asap">{t.form.timelineOpts.asap}</option>
+                      <option value="month">{t.form.timelineOpts.month}</option>
+                      <option value="planning">{t.form.timelineOpts.planning}</option>
+                    </select>
+                 </div>
+               </div>
+
+               <div className="mb-4">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.form.details} *</label>
+                <textarea required rows={3} className="w-full p-3 border border-gray-200 bg-gray-50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all" 
+                   value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})}
+                   placeholder="Describe your project goals, estimated budget, and any questions you have..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Upload Photos / Plans (Optional)</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors relative">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <div className="flex flex-col items-center pointer-events-none">
+                    <Upload className="text-gray-400 mb-2" size={24} />
+                    <span className="text-sm text-gray-500">{file ? file.name : "Click to upload or drag and drop"}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" className="w-full bg-primary text-white font-bold py-4 rounded-lg hover:bg-amber-600 transition-all shadow-lg text-lg uppercase tracking-wide">
+              {common.submit}
             </button>
+            <p className="text-xs text-center text-gray-400 mt-4">By submitting this form, you agree to receive calls/texts from BuildRight regarding your project estimate.</p>
           </form>
         </div>
       </div>
-
-      {/* Google Maps Section */}
-      <div>
-         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Find Us on the Map</h2>
-         <div className="w-full h-96 bg-gray-200 rounded-2xl overflow-hidden shadow-lg relative">
-           <iframe 
-             src="https://maps.google.com/maps?q=225+N+Cotner+Blvd,+Lincoln,+NE+68505&t=&z=15&ie=UTF8&iwloc=&output=embed"
-             width="100%" 
-             height="100%" 
-             style={{ border: 0 }} 
-             allowFullScreen 
-             loading="lazy" 
-             referrerPolicy="no-referrer-when-downgrade"
-             className="absolute inset-0"
-           ></iframe>
-         </div>
-      </div>
-
     </div>
   );
 };
-
-// Import Check icon for success state
-import { Check } from 'lucide-react';

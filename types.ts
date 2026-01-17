@@ -57,6 +57,10 @@ export interface ContactInquiry {
   name: string;
   email: string;
   phone: string;
+  zip: string;
+  serviceType: string;
+  timeline: string;
+  preferredContact: 'phone' | 'email' | 'text';
   message: string;
   attachmentUrl?: string; // base64 or mock url
   date: string;

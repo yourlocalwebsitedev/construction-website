@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Globe, Calendar, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Menu, X, Phone, Globe, Calendar, Facebook, Instagram, Twitter, Clock, ShieldCheck } from 'lucide-react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -30,13 +30,26 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-800 bg-gray-50">
-      {/* Top Bar - Desktop */}
-      <div className="bg-secondary text-white text-sm py-2 px-4 hidden md:flex justify-between items-center">
-        <div className="flex space-x-4">
-          <span className="flex items-center"><Phone size={14} className="mr-1" /> (555) 123-4567</span>
-          <span className="opacity-75">Mon-Sat: 8am - 6pm</span>
+      {/* Top Bar - Responsive */}
+      <div className="bg-secondary text-white text-xs md:text-sm py-2 px-4 flex justify-between items-center transition-all">
+        {/* Updated: justify-between on mobile forces left/right cornering, md:justify-start packs them for desktop */}
+        <div className="flex flex-row w-full md:w-auto items-center justify-between md:justify-start md:gap-6 whitespace-nowrap">
+          <a href="tel:+15551234567" className="flex items-center hover:text-primary transition-colors">
+            <Phone size={14} className="mr-1.5" /> 
+            <span>(555) 123-4567</span>
+          </a>
+          <span className="flex items-center opacity-80">
+            <Clock size={14} className="mr-1.5" /> 
+            <span>Mon-Sat: 8am - 6pm</span>
+          </span>
         </div>
-        <div className="flex space-x-4">
+        
+        {/* Desktop Language Switcher */}
+        <div className="hidden md:flex space-x-4 items-center">
+           <div className="flex items-center text-primary font-semibold text-xs border border-primary/30 rounded px-2 py-0.5">
+             <ShieldCheck size={12} className="mr-1" />
+             Licensed & Insured #GC-9821
+           </div>
            <button onClick={toggleLang} className="flex items-center hover:text-primary transition-colors uppercase font-bold text-xs">
              <Globe size={14} className="mr-1" /> {language === Language.EN ? 'Español' : 'English'}
            </button>
@@ -88,6 +101,12 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
               <NavLink to="/portfolio" label={t.nav.portfolio} />
               <NavLink to="/about" label={t.nav.about} />
               <NavLink to="/contact" label={t.nav.contact} />
+              <div className="px-4 py-2 mt-2">
+                 <div className="flex items-center text-gray-500 text-xs">
+                    <ShieldCheck size={12} className="mr-1" />
+                    Licensed #GC-9821
+                 </div>
+              </div>
               <Link to="/admin" className="block py-2 px-4 text-gray-400 text-sm mt-4">Admin Login</Link>
             </div>
           </div>
@@ -105,10 +124,14 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
           <div>
             <h3 className="text-white text-lg font-bold mb-4">BuildRight</h3>
             <p className="text-sm">Quality construction services for residential and commercial projects.</p>
+            <div className="mt-4 flex items-center text-primary text-sm font-bold">
+               <ShieldCheck size={16} className="mr-2" />
+               Licensed & Insured
+            </div>
           </div>
           <div>
             <h4 className="text-white font-semibold mb-4">Contact</h4>
-            <p className="text-sm mb-2">123 Builder Lane, Cityville</p>
+            <p className="text-sm mb-2">225 N Cotner Blvd, Lincoln, NE</p>
             <p className="text-sm mb-2">(555) 123-4567</p>
             <p className="text-sm">info@buildright.com</p>
           </div>
@@ -127,10 +150,13 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
               <a href="#" className="hover:text-primary"><Instagram size={20} /></a>
               <a href="#" className="hover:text-primary"><Twitter size={20} /></a>
             </div>
+            <div className="mt-4 pt-4 border-t border-gray-700">
+               <img src="https://via.placeholder.com/150x40/334155/FFFFFF?text=BBB+Accredited" alt="Accreditation" className="opacity-80 grayscale hover:grayscale-0 transition-all" />
+            </div>
           </div>
         </div>
         <div className="text-center text-xs mt-12 pt-8 border-t border-gray-700">
-          © {new Date().getFullYear()} BuildRight Contractors. All rights reserved.
+          © {new Date().getFullYear()} BuildRight Contractors. License #GC-9821. All rights reserved.
         </div>
       </footer>
 
