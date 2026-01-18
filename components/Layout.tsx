@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Globe, Calendar, Facebook, Instagram, Twitter, Clock, ShieldCheck, Award } from 'lucide-react';
+import { Menu, X, Phone, Globe, Calendar, Facebook, Instagram, Twitter, Clock, ShieldCheck, Award, MessageCircle } from 'lucide-react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -31,28 +31,51 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-800 bg-gray-50">
       {/* Top Bar - Responsive */}
-      <div className="bg-secondary text-white text-xs md:text-sm py-2 px-4 flex justify-between items-center transition-all">
-        {/* Updated: justify-between on mobile forces left/right cornering, md:justify-start packs them for desktop */}
-        <div className="flex flex-row w-full md:w-auto items-center justify-between md:justify-start md:gap-6 whitespace-nowrap">
-          <a href="tel:+15551234567" className="flex items-center hover:text-primary transition-colors">
-            <Phone size={14} className="mr-1.5" /> 
-            <span>(555) 123-4567</span>
-          </a>
-          <span className="flex items-center opacity-80">
-            <Clock size={14} className="mr-1.5" /> 
-            <span>Mon-Sat: 8am - 6pm</span>
-          </span>
-        </div>
-        
-        {/* Desktop Language Switcher */}
-        <div className="hidden md:flex space-x-4 items-center">
-           <div className="flex items-center text-primary font-semibold text-xs border border-primary/30 rounded px-2 py-0.5">
-             <ShieldCheck size={12} className="mr-1" />
-             Licensed & Insured #GC-9821
-           </div>
-           <button onClick={toggleLang} className="flex items-center hover:text-primary transition-colors uppercase font-bold text-xs">
-             <Globe size={14} className="mr-1" /> {language === Language.EN ? 'Español' : 'English'}
-           </button>
+      <div className="bg-secondary text-white text-xs md:text-sm py-1.5 px-4 transition-all border-b border-gray-700 md:border-none">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+            {/* Content Container - Grid on Mobile (2x2), Flex on Desktop */}
+            <div className="w-full md:w-auto grid grid-cols-2 md:flex md:items-center gap-y-1.5 md:gap-x-6">
+                {/* Phone - Mobile: Top Left */}
+                <a href="tel:+15551234567" className="flex items-center hover:text-primary transition-colors whitespace-nowrap justify-self-start">
+                   <Phone size={14} className="mr-1.5 text-primary" /> 
+                   <span>(555) 123-4567</span>
+                </a>
+                
+                {/* WhatsApp - Mobile: Top Right */}
+                <a 
+                   href="https://wa.me/15551234567" 
+                   target="_blank" 
+                   rel="noreferrer"
+                   className="flex items-center text-green-400 hover:text-green-300 font-bold transition-colors whitespace-nowrap justify-self-end md:justify-self-auto"
+                 >
+                   <MessageCircle size={14} className="mr-1" /> WhatsApp
+                 </a>
+
+                {/* Hours - Mobile: Bottom Left */}
+                <span className="flex items-center opacity-80 whitespace-nowrap justify-self-start md:justify-self-auto text-[11px] md:text-xs text-gray-400 md:text-gray-300">
+                    <Clock size={14} className="mr-1.5" /> 
+                    <span>Mon-Sat: 8am-6pm</span>
+                </span>
+                
+                {/* Hablamos Español badge - Mobile: Bottom Right */}
+                 <span className="flex items-center text-primary font-bold whitespace-nowrap justify-self-end md:justify-self-auto">
+                   {t.common.speaking}
+                 </span>
+            </div>
+
+            {/* Desktop Only Extras (License + Lang) */}
+            <div className="hidden md:flex items-center gap-4 shrink-0">
+               <div className="flex items-center text-gray-300 font-medium text-xs border border-gray-600 rounded px-2 py-0.5">
+                 <ShieldCheck size={12} className="mr-1" />
+                 Licensed #GC-9821
+               </div>
+               <button onClick={toggleLang} className="flex items-center hover:text-primary transition-colors text-xs cursor-pointer group">
+                 <Globe size={14} className="mr-1.5 group-hover:text-primary transition-colors" /> 
+                 <span className={`transition-colors ${language === Language.EN ? 'font-bold text-white' : 'font-medium text-gray-400 group-hover:text-primary/70'}`}>EN</span>
+                 <span className="mx-1.5 text-gray-600">|</span>
+                 <span className={`transition-colors ${language === Language.ES ? 'font-bold text-white' : 'font-medium text-gray-400 group-hover:text-primary/70'}`}>ES</span>
+               </button>
+            </div>
         </div>
       </div>
 
@@ -82,8 +105,10 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center space-x-4">
-               <button onClick={toggleLang} className="text-gray-600 font-bold uppercase text-sm">
-                 {language}
+               <button onClick={toggleLang} className="flex items-center text-sm font-bold border border-gray-200 rounded px-2 py-1">
+                 <span className={language === Language.EN ? "text-primary" : "text-gray-400"}>EN</span>
+                 <span className="mx-1 text-gray-300">/</span>
+                 <span className={language === Language.ES ? "text-primary" : "text-gray-400"}>ES</span>
                </button>
               <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-600">
                 {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -173,6 +198,11 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
 
       {/* Mobile Sticky CTA */}
       <div className="md:hidden fixed bottom-0 w-full bg-white border-t shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex justify-between items-center p-3 z-50">
+        <a href="https://wa.me/15551234567" className="flex-1 flex flex-col items-center text-green-600 active:text-green-700">
+          <MessageCircle size={20} />
+          <span className="text-xs font-medium mt-1">Text Us</span>
+        </a>
+        <div className="w-px h-8 bg-gray-200"></div>
         <a href="tel:+15551234567" className="flex-1 flex flex-col items-center text-gray-600 active:text-primary">
           <Phone size={20} />
           <span className="text-xs font-medium mt-1">{t.common.callUs}</span>

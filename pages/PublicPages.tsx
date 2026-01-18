@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { storageService } from '../services/storage';
 import { Service, Project, Review, Language, ServiceCategory } from '../types';
 import { TRANSLATIONS } from '../constants';
-import { Star, MapPin, ChevronRight, Upload, X, Shield, Award, Users, Hammer, CheckCircle, ShieldCheck, CalendarCheck, PenTool, Phone, Mail, MessageSquare, Check } from 'lucide-react';
+import { Star, MapPin, ChevronRight, Upload, X, Shield, Award, Users, Hammer, CheckCircle, ShieldCheck, CalendarCheck, PenTool, Phone, Mail, MessageSquare, Check, MessageCircle } from 'lucide-react';
 
 interface PageProps {
   language: Language;
@@ -31,7 +31,8 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
           alt="Construction background" 
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
+        {/* Added -mt-32 (increased from -mt-20) to pull content significantly higher */}
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 -mt-32">
           <div className="inline-flex items-center bg-primary/20 backdrop-blur-sm border border-primary/40 rounded-full px-4 py-1 text-primary text-sm font-bold mb-4 animate-fade-in-up">
             <ShieldCheck size={16} className="mr-2" /> {t.home.trust.licensed} #GC-9821
           </div>
@@ -45,12 +46,10 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
              <Link to="/contact" className="bg-primary hover:bg-amber-600 text-white font-bold py-4 px-10 rounded-full text-lg transition-transform hover:scale-105 shadow-lg shadow-primary/30 flex items-center justify-center">
                {t.home.cta}
              </Link>
-             <button 
-              onClick={() => onBookClick?.()}
-              className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold py-4 px-10 rounded-full text-lg transition-all"
-            >
-              {t.common.bookNow}
-            </button>
+             <a href="https://wa.me/15551234567" target="_blank" rel="noreferrer" className="bg-white/10 hover:bg-green-600/20 backdrop-blur-md text-white border border-white/30 font-bold py-4 px-10 rounded-full text-lg transition-all flex items-center">
+                <MessageCircle size={20} className="mr-2 text-green-400" />
+                {t.home.whatsapp}
+             </a>
           </div>
         </div>
       </div>
@@ -318,13 +317,13 @@ export const AboutPage: React.FC<PageProps> = ({ language }) => {
       <section className="bg-secondary py-16 px-4 text-white">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { label: t.stats.years, val: '18+' },
+            { label: t.stats.years, val: 'Local' },
             { label: t.stats.projects, val: '500+' },
-            { label: t.stats.clients, val: '100%' },
-            { label: t.stats.team, val: '45' },
+            { label: t.stats.clients, val: 'Free' },
+            { label: t.stats.team, val: 'Open' },
           ].map((stat, i) => (
             <div key={i} className="p-4 border border-gray-700/30 rounded-lg bg-white/5">
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.val}</div>
+              <div className="text-2xl md:text-3xl font-bold text-primary mb-2">{stat.val}</div>
               <div className="text-sm md:text-base font-medium uppercase tracking-wider opacity-80">{stat.label}</div>
             </div>
           ))}

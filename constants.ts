@@ -9,8 +9,8 @@ export const INITIAL_SERVICES: Service[] = [
       es: 'Renovación completa de cocinas incluyendo demolición, instalación de gabinetes y plomería.'
     },
     category: ServiceCategory.RESIDENTIAL,
-    // Shows specific kitchen construction context (unfinished walls, installation)
-    imageUrl: 'https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=800&q=80'
+    // Realistic: Cabinet installation/woodwork phase
+    imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 's2',
@@ -20,6 +20,7 @@ export const INITIAL_SERVICES: Service[] = [
       es: 'Soluciones de techado de alta durabilidad, impermeabilización y reparaciones estructurales.'
     },
     category: ServiceCategory.COMMERCIAL,
+    // Realistic: Workers on a roof
     imageUrl: 'https://images.unsplash.com/photo-1632759145351-1d592919f522?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -30,8 +31,8 @@ export const INITIAL_SERVICES: Service[] = [
       es: 'Demolición completa de baños, alicatado, instalación de accesorios y modernización.'
     },
     category: ServiceCategory.RESIDENTIAL,
-    // Kept as the high-quality finished bathroom image as requested
-    imageUrl: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800&q=80'
+    // Realistic: Tiling work in progress
+    imageUrl: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
@@ -44,8 +45,9 @@ export const INITIAL_PROJECTS: Project[] = [
       es: 'Una remodelación interior completa incluyendo la eliminación de muros de carga y refuerzo de cimientos.'
     },
     images: [
+      // Realistic: Framing/Structural work
       'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
+      'https://images.unsplash.com/photo-1595846519845-68e298c2edd8?auto=format&fit=crop&w=800&q=80'
     ],
     category: ServiceCategory.RESIDENTIAL,
     featured: true,
@@ -58,7 +60,7 @@ export const INITIAL_PROJECTS: Project[] = [
       en: 'Structural reinforcement and commercial facade update.',
       es: 'Refuerzo estructural y actualización de fachada comercial.'
     },
-    images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'],
+    images: ['https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80'],
     category: ServiceCategory.COMMERCIAL,
     featured: true,
     completionDate: '2025-01-20'
@@ -87,15 +89,16 @@ export const TRANSLATIONS = {
     nav: { home: 'Home', services: 'Services', portfolio: 'Portfolio', about: 'About', contact: 'Contact' },
     home: { 
       heroTitle: 'Quality Construction You Can Trust', 
-      heroSubtitle: 'Licensed & Insured General Contractors serving Lincoln, NE since 2005.', 
+      heroSubtitle: 'Licensed & Insured General Contractors serving Lincoln, NE.', 
       cta: 'Get a Free Quote',
+      whatsapp: 'Text Us',
       trust: {
         licensed: 'Licensed & Insured',
         warranty: '5-Year Warranty',
         rating: '4.9/5 Google Rating'
       }
     },
-    common: { bookNow: 'Book Now', callUs: 'Call Us', readMore: 'Read More', loading: 'Loading...', submit: 'Send Request' },
+    common: { bookNow: 'Book Now', callUs: 'Call Us', readMore: 'Read More', loading: 'Loading...', submit: 'Send Request', speaking: 'Hablamos Español' },
     admin: { title: 'Admin Dashboard', login: 'Login', projects: 'Projects', bookings: 'Bookings', services: 'Services' },
     booking: { selectService: 'Select Service', selectDate: 'Select Date & Time', yourInfo: 'Your Information', confirm: 'Confirm Booking' },
     contact: {
@@ -116,7 +119,7 @@ export const TRANSLATIONS = {
     },
     about: {
       title: 'About BuildRight',
-      subtitle: 'Building Trust Since 2005',
+      subtitle: 'Building Trust in Lincoln',
       storyTitle: 'Real Experience, Real Results',
       storyText: 'Founded with a vision to provide superior construction services, BuildRight has grown from a small family business to a leading contractor in the region. We pride ourselves on quality craftsmanship, transparent communication, and a dedication to turning our clients\' visions into reality.',
       missionTitle: 'Our Mission',
@@ -128,10 +131,10 @@ export const TRANSLATIONS = {
         innovation: { title: 'Innovation', desc: 'Utilizing modern techniques and sustainable materials.' }
       },
       stats: {
-        years: 'Years Exp',
-        projects: 'Projects',
-        clients: 'Happy Clients',
-        team: 'Team Members'
+        years: 'Trusted',
+        projects: 'Completed',
+        clients: 'Estimates',
+        team: 'Status'
       }
     }
   },
@@ -139,15 +142,16 @@ export const TRANSLATIONS = {
     nav: { home: 'Inicio', services: 'Servicios', portfolio: 'Portafolio', about: 'Nosotros', contact: 'Contacto' },
     home: { 
       heroTitle: 'Construcción de Calidad y Confianza', 
-      heroSubtitle: 'Contratistas Generales con Licencia y Seguro sirviendo a Lincoln, NE desde 2005.', 
+      heroSubtitle: 'Contratistas Generales con Licencia y Seguro sirviendo a Lincoln, NE.', 
       cta: 'Presupuesto Gratis',
+      whatsapp: 'Envíanos Mensaje',
       trust: {
         licensed: 'Licencia y Seguro',
         warranty: 'Garantía de 5 Años',
         rating: 'Calificación 4.9/5'
       }
     },
-    common: { bookNow: 'Reservar', callUs: 'Llamar', readMore: 'Leer Más', loading: 'Cargando...', submit: 'Enviar Solicitud' },
+    common: { bookNow: 'Reservar', callUs: 'Llamar', readMore: 'Leer Más', loading: 'Cargando...', submit: 'Enviar Solicitud', speaking: 'Hablamos Español' },
     admin: { title: 'Panel de Administración', login: 'Acceso', projects: 'Proyectos', bookings: 'Reservas', services: 'Servicios' },
     booking: { selectService: 'Seleccionar Servicio', selectDate: 'Seleccionar Fecha y Hora', yourInfo: 'Su Información', confirm: 'Confirmar Reserva' },
     contact: {
@@ -168,7 +172,7 @@ export const TRANSLATIONS = {
     },
     about: {
       title: 'Sobre BuildRight',
-      subtitle: 'Construyendo Confianza Desde 2005',
+      subtitle: 'Construyendo Confianza',
       storyTitle: 'Experiencia Real, Resultados Reales',
       storyText: 'Fundada con la visión de proporcionar servicios de construcción superiores, BuildRight ha pasado de ser una pequeña empresa familiar a un contratista líder en la región. Nos enorgullecemos de la artesanía de calidad, la comunicación transparente y la dedicación para convertir las visiones de nuestros clientes en realidad.',
       missionTitle: 'Nuestra Misión',
@@ -180,10 +184,10 @@ export const TRANSLATIONS = {
         innovation: { title: 'Innovación', desc: 'Utilizando técnicas modernas y materiales sostenibles.' }
       },
       stats: {
-        years: 'Años Exp',
-        projects: 'Proyectos',
-        clients: 'Clientes Felices',
-        team: 'Miembros'
+        years: 'Confiable',
+        projects: 'Completados',
+        clients: 'Presupuestos',
+        team: 'Estado'
       }
     }
   }

@@ -24,6 +24,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
   const t = TRANSLATIONS[language];
 
   // Time slots for the grid
+  // We store them in 24h format for logic, but display based on locale
   const timeSlots = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
   const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
@@ -53,6 +54,20 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
   };
 
   const getSelectedServiceDetails = () => services.find(s => s.id === selectedService);
+
+  // Helper to format time based on language
+  const formatTimeDisplay = (time24: string) => {
+    const [hours, minutes] = time24.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours), parseInt(minutes));
+    
+    // Use proper locale formatting
+    return date.toLocaleTimeString(language, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: language === Language.EN // 12h for EN, 24h for ES often preferred, or 12h with p.m.
+    });
+  };
 
   // Calendar Helpers
   const changeMonth = (offset: number) => {
@@ -169,7 +184,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
           <div className="flex items-center justify-between mb-4 px-2">
              <button onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-100 rounded-full text-gray-600"><ChevronLeft size={20}/></button>
              <span className="font-bold text-lg text-gray-800">
-               {currentCalendarMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+               {currentCalendarMonth.toLocaleString(language, { month: 'long', year: 'numeric' })}
              </span>
              <button onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-100 rounded-full text-gray-600"><ChevronRight size={20}/></button>
           </div>
@@ -186,7 +201,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
           
           {selectedDate && (
              <div className="mt-4 text-center text-sm font-medium text-primary bg-primary/10 py-2 rounded-lg">
-                Selected: {new Date(selectedDate + 'T12:00:00').toLocaleDateString(undefined, {weekday: 'short', month: 'long', day: 'numeric'})}
+                Selected: {new Date(selectedDate + 'T12:00:00').toLocaleDateString(language, {weekday: 'short', month: 'long', day: 'numeric'})}
              </div>
           )}
         </div>
@@ -208,7 +223,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
                   }
                 `}
               >
-                {time}
+                {formatTimeDisplay(time)}
               </button>
             ))}
           </div>
@@ -252,7 +267,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
              <div className="font-bold text-gray-800 text-lg">{service?.title[language]}</div>
              <div className="text-sm text-gray-600 mt-1 flex items-center">
                <Calendar size={14} className="mr-1"/>
-               {selectedDate && new Date(selectedDate + 'T12:00:00').toLocaleDateString()} at {selectedTime}
+               {selectedDate && new Date(selectedDate + 'T12:00:00').toLocaleDateString(language)} at {selectedTime && formatTimeDisplay(selectedTime)}
              </div>
              <div className="text-xs text-gray-500 mt-1 line-clamp-1">{service?.description[language]}</div>
            </div>
@@ -304,7 +319,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
           <button 
             disabled={!formData.name || !formData.email || !formData.phone}
             onClick={handleSubmit}
-            className="bg-primary text-white px-8 py-3 rounded-xl font-bold disabled:opacity-50 shadow-lg hover:shadow-xl hover:bg-amber-600 transition-all"
+            className="bg-primary text-white text-lg px-10 py-4 rounded-xl font-extrabold disabled:opacity-50 shadow-xl hover:shadow-2xl hover:scale-105 hover:bg-amber-500 transition-all uppercase tracking-wide"
           >
             {t.booking.confirm}
           </button>
