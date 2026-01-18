@@ -46,7 +46,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
              <Link to="/contact" className="bg-primary hover:bg-amber-600 text-white font-bold py-4 px-10 rounded-full text-lg transition-transform hover:scale-105 shadow-lg shadow-primary/30 flex items-center justify-center">
                {t.home.cta}
              </Link>
-             <a href="https://wa.me/15551234567" target="_blank" rel="noreferrer" className="bg-white/10 hover:bg-green-600/20 backdrop-blur-md text-white border border-white/30 font-bold py-4 px-10 rounded-full text-lg transition-all flex items-center">
+             <a href="https://wa.me/15551234567" target="_blank" rel="noreferrer" className="bg-white/10 hover:bg-green-600/20 backdrop-blur-md text-white border border-white/30 font-bold py-4 px-10 rounded-full text-lg transition-all flex items-center justify-center">
                 <MessageCircle size={20} className="mr-2 text-green-400" />
                 {t.home.whatsapp}
              </a>

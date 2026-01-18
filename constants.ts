@@ -98,7 +98,16 @@ export const TRANSLATIONS = {
         rating: '4.9/5 Google Rating'
       }
     },
-    common: { bookNow: 'Book Now', callUs: 'Call Us', readMore: 'Read More', loading: 'Loading...', submit: 'Send Request', speaking: 'Hablamos Español' },
+    common: { 
+      bookNow: 'Book Now', 
+      callUs: 'Call Us', 
+      readMore: 'Read More', 
+      loading: 'Loading...', 
+      submit: 'Send Request', 
+      speaking: 'Hablamos Español',
+      hours: 'Mon-Sat: 8am-6pm',
+      licenseShort: 'Licensed'
+    },
     admin: { title: 'Admin Dashboard', login: 'Login', projects: 'Projects', bookings: 'Bookings', services: 'Services' },
     booking: { selectService: 'Select Service', selectDate: 'Select Date & Time', yourInfo: 'Your Information', confirm: 'Confirm Booking' },
     contact: {
@@ -151,7 +160,16 @@ export const TRANSLATIONS = {
         rating: 'Calificación 4.9/5'
       }
     },
-    common: { bookNow: 'Reservar', callUs: 'Llamar', readMore: 'Leer Más', loading: 'Cargando...', submit: 'Enviar Solicitud', speaking: 'Hablamos Español' },
+    common: { 
+      bookNow: 'Reservar', 
+      callUs: 'Llamar', 
+      readMore: 'Leer Más', 
+      loading: 'Cargando...', 
+      submit: 'Enviar Solicitud', 
+      speaking: 'Hablamos Español',
+      hours: 'Lun-Sáb: 8am-6pm',
+      licenseShort: 'Licencia'
+    },
     admin: { title: 'Panel de Administración', login: 'Acceso', projects: 'Proyectos', bookings: 'Reservas', services: 'Servicios' },
     booking: { selectService: 'Seleccionar Servicio', selectDate: 'Seleccionar Fecha y Hora', yourInfo: 'Su Información', confirm: 'Confirmar Reserva' },
     contact: {
