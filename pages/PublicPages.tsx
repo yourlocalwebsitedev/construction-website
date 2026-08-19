@@ -48,7 +48,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
   return (
     <div>
       {/* Hero */}
-      <div className="relative h-[650px] bg-secondary flex items-center justify-center text-center px-4 overflow-hidden">
+      <div className="relative h-[500px] md:h-[650px] bg-secondary flex items-center justify-center text-center px-4 overflow-hidden">
         {/* Fixed: Used a highly reliable, standard construction architectural image */}
         <img
           src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80"
@@ -56,7 +56,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
         {/* Added -mt-32 (increased from -mt-20) to pull content significantly higher */}
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6 -mt-32">
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 -mt-12 md:-mt-32">
           <div className="inline-flex items-center bg-primary/20 backdrop-blur-sm border border-primary/40 rounded-full px-4 py-1 text-primary text-sm font-bold mb-4 animate-fade-in-up">
             <ShieldCheck size={16} className="mr-2" /> {t.home.trust.licensed}{" "}
             #GC-9821
@@ -88,7 +88,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
       </div>
 
       {/* Trust Bar */}
-      <div className="bg-primary text-secondary py-6 px-4 shadow-lg relative z-20 -mt-8 mx-4 md:mx-auto max-w-6xl rounded-xl">
+      <div className="bg-primary text-secondary py-6 px-4 shadow-lg relative z-20 -mt-4 md:-mt-8 mx-4 md:mx-auto max-w-6xl rounded-xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-secondary/20">
           <div className="flex items-center justify-center gap-3 p-2">
             <ShieldCheck size={32} />
@@ -158,7 +158,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
             to="/portfolio"
             className="inline-flex items-center text-primary font-bold hover:underline"
           >
-            View All Projects <ChevronRight size={20} />
+            {t.home.viewAllProjects} <ChevronRight size={20} />
           </Link>
         </div>
       </section>
@@ -168,7 +168,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center mb-12 flex-col">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
-              What Our Clients Say
+              {t.home.testimonials}
             </h2>
             <div className="flex items-center gap-2 text-gray-600 bg-white px-4 py-2 rounded-full shadow-sm">
               <img
@@ -214,7 +214,7 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
                   <div className="font-bold text-gray-800">{r.author}</div>
                   <div className="text-xs text-gray-400 flex items-center mt-1">
                     <CheckCircle size={10} className="mr-1 text-green-500" />{" "}
-                    Verified Client • {new Date(r.date).toLocaleDateString()}
+                    {t.home.verifiedClient} • {new Date(r.date).toLocaleDateString()}
                   </div>
                 </div>
               </div>
@@ -232,6 +232,7 @@ export const ServicesPage: React.FC<PageProps> = ({
   onBookClick,
 }) => {
   const [services, setServices] = useState<Service[]>([]);
+  const t = TRANSLATIONS[language];
 
   useEffect(() => {
     setServices(storageService.getServices());
@@ -239,7 +240,7 @@ export const ServicesPage: React.FC<PageProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto py-16 px-4">
-      <h1 className="text-4xl font-bold mb-12 text-center">Our Services</h1>
+      <h1 className="text-4xl font-bold mb-12 text-center">{t.services.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {services.map((service) => (
           <div
@@ -270,7 +271,7 @@ export const ServicesPage: React.FC<PageProps> = ({
                 onClick={() => onBookClick?.(service.id)}
                 className="w-full bg-secondary text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
               >
-                Book This Service <ChevronRight size={16} className="ml-2" />
+                {t.services.bookService} <ChevronRight size={16} className="ml-2" />
               </button>
             </div>
           </div>
@@ -286,6 +287,7 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
   const [firebaseJobs, setFirebaseJobs] = useState<any[]>([]);
   const [filter, setFilter] = useState<ServiceCategory | "All">("All");
   const [loading, setLoading] = useState(true);
+  const t = TRANSLATIONS[language];
 
   useEffect(() => {
     loadAllProjects();
@@ -321,9 +323,18 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
   const filteredProjects =
     filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
+  const getCategoryLabel = (cat: string) => {
+    if (cat === "All") return t.portfolio.filterAll;
+    if (cat === ServiceCategory.RESIDENTIAL) return t.portfolio.filterResidential;
+    if (cat === ServiceCategory.COMMERCIAL) return t.portfolio.filterCommercial;
+    return cat;
+  };
+
   return (
     <div className="max-w-7xl mx-auto py-16 px-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">Our Portfolio</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">
+        {t.portfolio.title}
+      </h1>
 
       {/* Filters */}
       <div className="flex flex-wrap justify-center gap-4 mb-12">
@@ -333,7 +344,7 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
             onClick={() => setFilter(cat as any)}
             className={`px-6 py-2 rounded-full font-medium transition-colors ${filter === cat ? "bg-primary text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
           >
-            {cat}
+            {getCategoryLabel(cat)}
           </button>
         ))}
       </div>
@@ -342,9 +353,7 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           <p className="mt-4 text-gray-600">
-            {language === Language.EN
-              ? "Loading portfolio..."
-              : "Cargando portafolio..."}
+            {t.portfolio.loadingPortfolio}
           </p>
         </div>
       )}
@@ -376,7 +385,7 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
                   {project.description[language]}
                 </p>
                 <button className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-semibold transition-all transform group-hover:scale-105">
-                  {language === Language.EN ? "View Project" : "Ver Proyecto"}
+                  {t.portfolio.viewProject}
                 </button>
               </div>
             </Link>
@@ -455,9 +464,7 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
                       </p>
                     )}
                     <button className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-semibold transition-all transform group-hover:scale-105">
-                      {language === Language.EN
-                        ? "View Project"
-                        : "Ver Proyecto"}
+                      {t.portfolio.viewProject}
                     </button>
                   </div>
                 </Link>

@@ -96,7 +96,11 @@ export const TRANSLATIONS = {
         licensed: 'Licensed & Insured',
         warranty: '5-Year Warranty',
         rating: '4.9/5 Google Rating'
-      }
+      },
+      featuredProjects: 'Featured Projects',
+      viewAllProjects: 'View All Projects',
+      testimonials: 'What Our Clients Say',
+      verifiedClient: 'Verified Client'
     },
     common: { 
       bookNow: 'Book Now', 
@@ -107,6 +111,18 @@ export const TRANSLATIONS = {
       speaking: 'Hablamos Español',
       hours: 'Mon-Sat: 8am-6pm',
       licenseShort: 'Licensed'
+    },
+    portfolio: {
+      title: 'Our Portfolio',
+      filterAll: 'All',
+      filterResidential: 'Residential',
+      filterCommercial: 'Commercial',
+      loadingPortfolio: 'Loading portfolio...',
+      viewProject: 'View Project'
+    },
+    services: {
+      title: 'Our Services',
+      bookService: 'Book Service'
     },
     admin: { title: 'Admin Dashboard', login: 'Login', projects: 'Projects', bookings: 'Bookings', services: 'Services' },
     booking: { selectService: 'Select Service', selectDate: 'Select Date & Time', yourInfo: 'Your Information', confirm: 'Confirm Booking' },
@@ -158,7 +174,11 @@ export const TRANSLATIONS = {
         licensed: 'Licencia y Seguro',
         warranty: 'Garantía de 5 Años',
         rating: 'Calificación 4.9/5'
-      }
+      },
+      featuredProjects: 'Proyectos Destacados',
+      viewAllProjects: 'Ver Todos los Proyectos',
+      testimonials: 'Lo Que Dicen Nuestros Clientes',
+      verifiedClient: 'Cliente Verificado'
     },
     common: { 
       bookNow: 'Reservar', 
@@ -169,6 +189,18 @@ export const TRANSLATIONS = {
       speaking: 'Hablamos Español',
       hours: 'Lun-Sáb: 8am-6pm',
       licenseShort: 'Licencia'
+    },
+    portfolio: {
+      title: 'Nuestro Portafolio',
+      filterAll: 'Todos',
+      filterResidential: 'Residencial',
+      filterCommercial: 'Comercial',
+      loadingPortfolio: 'Cargando portafolio...',
+      viewProject: 'Ver Proyecto'
+    },
+    services: {
+      title: 'Nuestros Servicios',
+      bookService: 'Reservar Servicio'
     },
     admin: { title: 'Panel de Administración', login: 'Acceso', projects: 'Proyectos', bookings: 'Reservas', services: 'Servicios' },
     booking: { selectService: 'Seleccionar Servicio', selectDate: 'Seleccionar Fecha y Hora', yourInfo: 'Su Información', confirm: 'Confirmar Reserva' },
