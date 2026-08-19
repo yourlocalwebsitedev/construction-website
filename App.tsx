@@ -4,6 +4,8 @@ import Layout from './components/Layout';
 import BookingSystem from './components/BookingSystem';
 import { HomePage, ServicesPage, PortfolioPage, ContactPage, AboutPage } from './pages/PublicPages';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { JobsAdmin } from './pages/JobsAdmin';
+import { ProjectDetailPage } from './pages/ProjectDetailPage';
 import { Language } from './types';
 
 const App: React.FC = () => {
@@ -20,6 +22,7 @@ const App: React.FC = () => {
     <HashRouter>
       <Routes>
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/jobs-admin" element={<JobsAdmin />} />
         
         <Route path="*" element={
           <Layout language={language} setLanguage={setLanguage} onBookClick={() => openBooking()}>
@@ -27,6 +30,7 @@ const App: React.FC = () => {
                 <Route path="/" element={<HomePage language={language} onBookClick={openBooking} />} />
                 <Route path="/services" element={<ServicesPage language={language} onBookClick={openBooking} />} />
                 <Route path="/portfolio" element={<PortfolioPage language={language} />} />
+                <Route path="/project/:id" element={<ProjectDetailPage language={language} />} />
                 <Route path="/about" element={<AboutPage language={language} />} />
                 <Route path="/contact" element={<ContactPage language={language} />} />
                 <Route path="*" element={<Navigate to="/" replace />} />

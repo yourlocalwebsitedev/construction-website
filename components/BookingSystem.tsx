@@ -35,7 +35,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
   const handleNext = () => setStep(p => p + 1);
   const handleBack = () => setStep(p => p - 1);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedService || !selectedDate || !selectedTime) return;
 
     const newBooking: Booking = {
@@ -49,7 +49,23 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ language, preselectedServ
       notes: formData.notes
     };
 
+    // Save to local storage
     storageService.addBooking(newBooking);
+    
+    // Save to Firebase
+    try {
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      const { db } = await import('../firebase.config');
+      
+      await addDoc(collection(db, 'bookings'), {
+        ...newBooking,
+        createdAt: serverTimestamp(),
+        serviceName: getSelectedServiceDetails()?.title[language] || 'Unknown Service'
+      });
+    } catch (error) {
+      console.error('Error saving booking to Firebase:', error);
+    }
+    
     setStep(4); // Success step
   };
 
