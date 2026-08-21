@@ -3,15 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BuildRight Contractors</title>
+    <title>K&amp;L Pro-Finish Plastering LLC | Professional Plastering &amp; Finishing</title>
+    <meta name="description" content="K&L Pro-Finish Plastering LLC — expert plaster repair, ceiling repair, drywall finishing and surface restoration. Licensed, insured, and locally trusted. Get a free estimate today." />
+    <link rel="canonical" href="/" />
+    <meta property="og:title" content="K&L Pro-Finish Plastering LLC" />
+    <meta property="og:description" content="Beautiful finishes. Built to last. Expert plaster repair, ceiling repair, drywall finishing and surface restoration." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              primary: '#F59E0B', // Amber 500
-              secondary: '#1E293B', // Slate 800
+              // K&L Pro-Finish brand palette
+              ink: '#111312',       // Near Black
+              charcoal: '#252525',
+              cream: '#FAF8F3',     // Warm White
+              softcream: '#F4EFE5', // Soft Cream
+              gold: '#B8862B',      // Muted Gold
+              'gold-light': '#C6922D', // Premium Gold
+              body: '#3D3D3D',
+              primary: '#B8862B',
+              secondary: '#111312',
+            },
+            fontFamily: {
+              serif: ['"Playfair Display"', 'serif'],
+              sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
             }
           }
         }
@@ -26,6 +46,36 @@
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
+      html { scroll-behavior: smooth; }
+      body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+
+      /* Hero background animation — subtle moving gradient + light sweep.
+         Pure CSS, no image/video download, GPU-composited. */
+      @keyframes heroGradientDrift {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      @keyframes heroLightSweep {
+        0%   { transform: translateX(-30%) translateY(-10%) rotate(8deg); opacity: 0; }
+        15%  { opacity: 0.35; }
+        50%  { transform: translateX(10%) translateY(5%) rotate(8deg); opacity: 0.5; }
+        85%  { opacity: 0.2; }
+        100% { transform: translateX(60%) translateY(-10%) rotate(8deg); opacity: 0; }
+      }
+      .hero-animated-bg {
+        background: linear-gradient(120deg, #0a0b0a 0%, #1c1a15 30%, #2e2617 50%, #14120e 70%, #0a0b0a 100%);
+        background-size: 300% 300%;
+        animation: heroGradientDrift 5s ease-in-out infinite;
+      }
+      .hero-light-sweep {
+        background: linear-gradient(100deg, transparent 35%, rgba(184,134,43,0.4) 50%, transparent 65%);
+        mix-blend-mode: screen;
+        animation: heroLightSweep 5s ease-in-out infinite;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hero-animated-bg, .hero-light-sweep { animation: none; }
+      }
     </style>
   <script type="importmap">
 {
@@ -39,6 +89,20 @@
   }
 }
 </script>
+<!--
+  Google Analytics (GA4): add the real measurement ID snippet here once
+  a GA4 property has been created for this business — no ID is fabricated.
+  Example:
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX');
+  </script>
+  Google Search Console: verify domain ownership via a <meta name="google-site-verification">
+  tag here, or via DNS TXT record, once the property is created.
+-->
 </head>
   <body>
     <div id="root"></div>

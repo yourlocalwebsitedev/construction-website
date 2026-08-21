@@ -1,0 +1,57 @@
+// ============================================================
+// Firebase Storage Security Rules — K&L Pro-Finish Plastering LLC
+//
+// Deployment: deploy with `firebase deploy --only storage` once the
+// Firebase CLI is authenticated (not run automatically by this change).
+//
+// IMPORTANT — CORS: browser-based resumable uploads (used by the estimate
+// photo upload flow) require CORS to be configured on the Storage bucket,
+// or the upload will fail with a CORS preflight error in every browser.
+// Apply the provided storage-cors.json once, from an authenticated shell:
+//   gsutil cors set storage-cors.json gs://kl-profinish-plastering-llc.firebasestorage.app
+//
+// Model:
+//   - Public visitors may upload photos into their own new inquiry's
+//     folder (inquiries/{inquiryId}/...) but cannot read, overwrite, or
+//     delete any uploaded file — uploads are write-once from the client.
+//   - Project/job media (used on the public site) is publicly readable
+//     but only writable by an authenticated admin.
+// ============================================================
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      // TODO: replace with real admin check before production deploy.
+      return request.auth != null;
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*')
+        && request.resource.size < 10 * 1024 * 1024; // 10MB
+    }
+
+    // Customer-submitted estimate photos.
+    match /inquiries/{inquiryId}/{fileName} {
+      allow create: if isValidImage();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Admin-managed project/job media, public read for the website gallery.
+    match /projects/{projectId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+    }
+
+    match /jobs/{jobId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Deny everything else by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

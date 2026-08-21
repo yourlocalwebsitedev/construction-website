@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { Language } from '../types';
+import { getProjects, isFirestoreUnavailable, markFirestoreUnavailable } from '../services/db';
+import { trackEvent } from '../services/analytics';
 import { ArrowLeft, MapPin, Calendar, X, Play } from 'lucide-react';
 
 interface Job {
@@ -43,8 +45,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
   const fetchStaticProject = async (projectId: string) => {
     setIsStaticProject(true);
     try {
-      const { storageService } = await import('../services/storage');
-      const projects = storageService.getProjects();
+      const projects = await getProjects();
       const project = projects.find(p => p.id === projectId);
       
       if (project) {
@@ -58,8 +59,9 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
           imageUrls: project.images,
           createdAt: null
         } as Job);
+        trackEvent('project_view', { projectId: project.id, source: 'static' });
       } else {
-        navigate('/portfolio');
+        navigate('/projects');
       }
     } catch (error) {
       console.error('Error fetching static project:', error);
@@ -70,17 +72,28 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
 
   const fetchFirebaseJob = async (jobId: string) => {
     setIsStaticProject(false);
+    if (isFirestoreUnavailable()) {
+      navigate('/projects');
+      setLoading(false);
+      return;
+    }
     try {
       const docRef = doc(db, 'jobs', jobId);
-      const docSnap = await getDoc(docRef);
-      
+      const docSnap = await Promise.race([
+        getDoc(docRef),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('job fetch timed out')), 3000)),
+      ]);
+
       if (docSnap.exists()) {
         setJob({ id: docSnap.id, ...docSnap.data() } as Job);
+        trackEvent('project_view', { projectId: docSnap.id, source: 'firebase' });
       } else {
-        navigate('/portfolio');
+        navigate('/projects');
       }
     } catch (error) {
       console.error('Error fetching job:', error);
+      markFirestoreUnavailable();
+      navigate('/projects');
     } finally {
       setLoading(false);
     }
@@ -106,8 +119,8 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             {language === Language.EN ? 'Project Not Found' : 'Proyecto No Encontrado'}
           </h2>
-          <Link to="/portfolio" className="text-primary hover:underline">
-            {language === Language.EN ? '← Back to Portfolio' : '← Volver al Portafolio'}
+          <Link to="/projects" className="text-primary hover:underline">
+            {language === Language.EN ? '← Back to Projects' : '← Volver a Proyectos'}
           </Link>
         </div>
       </div>
@@ -132,7 +145,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
             <span className="font-medium">{language === Language.EN ? 'Back' : 'Atrás'}</span>
           </button>
           <Link
-            to="/portfolio"
+            to="/projects"
             className="text-sm text-primary hover:text-primary/80 font-medium"
           >
             {language === Language.EN ? 'View More Projects →' : 'Ver Más Proyectos →'}
@@ -238,6 +251,19 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
             </p>
           </div>
         )}
+      </div>
+
+      {/* Final CTA */}
+      <div className="bg-secondary py-14 px-4 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+          {language === Language.EN ? 'HAVE A SIMILAR PROJECT?' : '¿TIENES UN PROYECTO SIMILAR?'}
+        </h2>
+        <Link
+          to="/contact"
+          className="inline-block mt-4 bg-primary hover:bg-primary/90 text-white font-bold py-3.5 px-8 rounded-md text-sm tracking-wide transition-colors"
+        >
+          {language === Language.EN ? 'GET A FREE ESTIMATE' : 'PRESUPUESTO GRATIS'}
+        </Link>
       </div>
 
       {/* Lightbox for Full-Size Images */}

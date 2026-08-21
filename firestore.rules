@@ -1,0 +1,80 @@
+// ============================================================
+// Firestore Security Rules — K&L Pro-Finish Plastering LLC
+//
+// Deployment: this file documents the intended access-control model for
+// Phase 2. Deploy with `firebase deploy --only firestore:rules` once the
+// Firebase CLI is authenticated against the `kl-profinish-plastering-llc`
+// project (not run automatically by this change).
+//
+// Model:
+//   - Public (unauthenticated) visitors may READ business content
+//     (services, projects, reviews, service_areas, business_settings)
+//     and may CREATE (but never read/update/delete) estimate inquiries.
+//   - All writes to business content and all reads/updates/deletes of
+//     inquiries require an authenticated admin (see isAdmin()).
+//   - Admin auth is out of scope for this phase — wire `isAdmin()` to
+//     your existing admin auth mechanism (custom claim, allowlisted UID,
+//     etc.) before deploying to production.
+// ============================================================
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Public, read-only business content.
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /project_media/{mediaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /service_areas/{areaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /business_settings/{settingsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Legacy collections retained from the original booking system.
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /bookings/{bookingId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if true;
+    }
+
+    // Estimate inquiries: public visitors may submit a new request but
+    // can never read other customers' submissions or modify any inquiry
+    // once created (including their own) — that's admin-only.
+    match /inquiries/{inquiryId} {
+      allow create: if request.resource.data.keys().hasAll([
+        'customerName', 'phone', 'email', 'serviceId', 'zip', 'city', 'description', 'status'
+      ]) && request.resource.data.status == 'NEW';
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

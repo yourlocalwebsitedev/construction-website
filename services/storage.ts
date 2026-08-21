@@ -1,13 +1,13 @@
 import { Project, Service, Review, Booking, ContactInquiry } from '../types';
 import { INITIAL_PROJECTS, INITIAL_SERVICES, INITIAL_REVIEWS } from '../constants';
 
-// Updated keys to v11 to strictly force fresh data load and clear old images
+// Bumped to v12 for the K&L Pro-Finish rebrand data shape (adds Service.slug, etc).
 const KEYS = {
-  PROJECTS: 'br_projects_v11',
-  SERVICES: 'br_services_v11',
-  REVIEWS: 'br_reviews_v11',
-  BOOKINGS: 'br_bookings_v11',
-  INQUIRIES: 'br_inquiries_v11'
+  PROJECTS: 'br_projects_v12',
+  SERVICES: 'br_services_v12',
+  REVIEWS: 'br_reviews_v12',
+  BOOKINGS: 'br_bookings_v12',
+  INQUIRIES: 'br_inquiries_v12'
 };
 
 const get = <T>(key: string, initial: T): T => {

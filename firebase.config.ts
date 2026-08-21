@@ -5,14 +5,15 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBJ6ngXNhUvSES8bJiRjveIIV8bicP_w1k",
-  authDomain: "kl-profinish-plastering-llc.firebaseapp.com",
-  projectId: "kl-profinish-plastering-llc",
-  storageBucket: "kl-profinish-plastering-llc.firebasestorage.app",
-  messagingSenderId: "720423465952",
-  appId: "1:720423465952:web:fdd8a9de27c8dae3c47185",
+  apiKey: "AIzaSyBvVYa_F0lhBLLKTEGLbjKfjBwkelTZkzU",
+  authDomain: "kl-profinish-plastering-de401.firebaseapp.com",
+  projectId: "kl-profinish-plastering-de401",
+  storageBucket: "kl-profinish-plastering-de401.firebasestorage.app",
+  messagingSenderId: "792202671835",
+  appId: "1:792202671835:web:0bad7a77753196d143befe",
 };
 
 // Initialize Firebase
@@ -21,5 +22,6 @@ const app = initializeApp(firebaseConfig);
 // Initialize services
 export const storage = getStorage(app);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 export default app;
