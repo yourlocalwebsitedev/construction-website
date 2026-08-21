@@ -204,28 +204,37 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
   };
 
   // ---------------- Renderers ----------------
-  const renderProgress = () => (
-    <div className="mb-6 mt-1">
-      <div className="flex justify-between items-center mb-2 px-0.5 overflow-x-auto no-scrollbar gap-1">
-        {[t.steps.service, t.steps.location, t.steps.project, t.steps.photos, t.steps.contact].map((label, i) => (
-          <span
-            key={label}
-            className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap ${
-              step >= i + 1 ? 'text-primary' : 'text-gray-400'
-            }`}
-          >
-            {i + 1}. {label}
-          </span>
-        ))}
+  const renderProgress = () => {
+    const labels = [t.steps.service, t.steps.location, t.steps.project, t.steps.photos, t.steps.contact];
+    const currentLabel = labels[Math.min(step, TOTAL_STEPS) - 1];
+    return (
+      <div className="mb-6 mt-1 pr-8 sm:pr-9">
+        {/* Compact mobile view: avoids 5-label overflow colliding with close button */}
+        <div className="sm:hidden mb-2 text-[11px] font-bold uppercase tracking-wider text-primary">
+          Step {Math.min(step, TOTAL_STEPS)} of {TOTAL_STEPS}: {currentLabel}
+        </div>
+        {/* Full label row on larger screens */}
+        <div className="hidden sm:flex justify-between items-center mb-2 gap-1">
+          {labels.map((label, i) => (
+            <span
+              key={label}
+              className={`text-xs font-bold uppercase tracking-wider whitespace-nowrap ${
+                step >= i + 1 ? 'text-primary' : 'text-gray-400'
+              }`}
+            >
+              {i + 1}. {label}
+            </span>
+          ))}
+        </div>
+        <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-300 ease-in-out"
+            style={{ width: `${(Math.min(step, TOTAL_STEPS) / TOTAL_STEPS) * 100}%` }}
+          />
+        </div>
       </div>
-      <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-primary transition-all duration-300 ease-in-out"
-          style={{ width: `${(Math.min(step, TOTAL_STEPS) / TOTAL_STEPS) * 100}%` }}
-        />
-      </div>
-    </div>
-  );
+    );
+  };
 
   const renderStep1 = () => (
     <div className="space-y-4">

@@ -139,14 +139,6 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-2 pb-1">
-                <button
-                  onClick={() => { closeMenu(); onBookClick(); }}
-                  className="w-full bg-gold text-ink font-bold py-3.5 rounded-lg tracking-wide"
-                >
-                  {t.common.getEstimate}
-                </button>
-              </div>
             </div>
           </div>
         )}
