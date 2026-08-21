@@ -219,10 +219,10 @@ const Layout: React.FC<LayoutProps> = ({ children, language, setLanguage, onBook
         </a>
         <button
           onClick={onBookClick}
-          className="flex-[1.4] flex flex-col items-center justify-center bg-gold text-ink font-bold py-2.5 min-h-[56px]"
+          className="flex-[1.4] flex flex-col items-center justify-center text-cream/80 active:text-gold py-2.5 min-h-[56px]"
         >
           <ClipboardList size={20} />
-          <span className="text-[10px] mt-0.5">{language === Language.EN ? 'Get Quote' : 'Presupuesto'}</span>
+          <span className="text-[10px] font-medium mt-0.5">{language === Language.EN ? 'Get Quote' : 'Presupuesto'}</span>
         </button>
       </div>
     </div>
