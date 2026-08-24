@@ -5,16 +5,6 @@ import EstimateSystem from './features/booking/EstimateSystem';
 import { HomePage, ServicesPage, PortfolioPage, ContactPage, AboutPage } from './pages/PublicPages';
 import { ServiceDetailPage, ReviewsPage, VideosPage } from './pages/MorePages';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
-import { AdminGate } from './pages/admin/AdminGate';
-import { AdminDashboardHome } from './pages/admin/AdminDashboardHome';
-import { AdminLeadsList } from './pages/admin/AdminLeadsList';
-import { AdminLeadDetail } from './pages/admin/AdminLeadDetail';
-import { AdminProjectsList } from './pages/admin/AdminProjectsList';
-import { AdminProjectForm } from './pages/admin/AdminProjectForm';
-import { AdminServicesList, AdminServiceForm } from './pages/admin/AdminServices';
-import { AdminReviewsList, AdminReviewForm } from './pages/admin/AdminReviews';
-import { AdminSettings } from './pages/admin/AdminSettings';
-import { AdminQuickUpload, AdminQuickUploadSaved } from './pages/admin/AdminQuickUpload';
 import { Language } from './types';
 import { getStoredLanguage, setStoredLanguage } from './services/preferences';
 import { trackEvent } from './services/analytics';
@@ -38,22 +28,6 @@ const App: React.FC = () => {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/admin/*" element={<AdminGate />}>
-          <Route index element={<AdminDashboardHome />} />
-          <Route path="leads" element={<AdminLeadsList />} />
-          <Route path="leads/:id" element={<AdminLeadDetail />} />
-          <Route path="projects" element={<AdminProjectsList />} />
-          <Route path="projects/:id" element={<AdminProjectForm />} />
-          <Route path="quick-upload" element={<AdminQuickUpload />} />
-          <Route path="quick-upload/saved" element={<AdminQuickUploadSaved />} />
-          <Route path="services" element={<AdminServicesList />} />
-          <Route path="services/:id" element={<AdminServiceForm />} />
-          <Route path="reviews" element={<AdminReviewsList />} />
-          <Route path="reviews/:id" element={<AdminReviewForm />} />
-          <Route path="settings" element={<AdminSettings />} />
-        </Route>
-        <Route path="/jobs-admin" element={<Navigate to="/admin/quick-upload" replace />} />
-        
         <Route path="*" element={
           <Layout language={language} setLanguage={setLanguage} onBookClick={() => openBooking()}>
              <Routes>

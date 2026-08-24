@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getServices, getProjects, getReviews, getServiceAreas, isFirestoreUnavailable, markFirestoreUnavailable } from "../services/db";
+import { getServices, getProjects, getReviews, getServiceAreas } from "../services/db";
 import { Service, Project, Review, Language, ServiceCategory } from "../types";
 import { TRANSLATIONS, COMPANY, BEFORE_AFTER_ITEMS, SERVICE_AREAS } from "../constants";
 import BeforeAfterSlider from "../components/common/BeforeAfterSlider";
@@ -65,7 +65,11 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
     <div>
       {/* ============ HERO ============ */}
       <section className="relative bg-ink flex items-center px-4 overflow-hidden py-16 sm:py-24 md:min-h-[680px] md:py-0">
-        <div className="absolute inset-0 hero-animated-bg" />
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-ink/70" />
         <div className="absolute inset-0 hero-light-sweep" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
         <div className="relative z-10 max-w-3xl mx-auto text-center sm:py-16">
@@ -492,7 +496,6 @@ export const ServicesPage: React.FC<PageProps> = ({ language, onBookClick }) => 
 // ============================================================
 export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [firebaseJobs, setFirebaseJobs] = useState<any[]>([]);
   const [filter, setFilter] = useState<ServiceCategory | "All">("All");
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'projects' | 'beforeAfter'>('projects');
@@ -500,34 +503,11 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
   const t = TRANSLATIONS[language];
 
   useEffect(() => {
-    loadAllProjects();
+    getProjects().then((data) => {
+      setProjects(data);
+      setLoading(false);
+    });
   }, []);
-
-  const loadAllProjects = async () => {
-    const staticProjects = await getProjects();
-    setProjects(staticProjects);
-    if (isFirestoreUnavailable()) {
-      setLoading(false);
-      return;
-    }
-    try {
-      const { collection, query, orderBy, getDocs } = await import("firebase/firestore");
-      const { db } = await import("../firebase.config");
-      const q = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
-      const querySnapshot = await Promise.race([
-        getDocs(q),
-        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('jobs fetch timed out')), 3000)),
-      ]);
-      const jobs: any[] = [];
-      querySnapshot.forEach((doc) => jobs.push({ id: doc.id, ...doc.data() }));
-      setFirebaseJobs(jobs);
-    } catch (error) {
-      console.error("Error fetching Firebase jobs:", error);
-      markFirestoreUnavailable();
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filteredProjects = filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
@@ -630,51 +610,10 @@ export const PortfolioPage: React.FC<PageProps> = ({ language }) => {
                 </div>
               </Link>
             ))}
-
-            {filter === "All" && firebaseJobs.map((job) => {
-              const firstImage = job.imageUrls && job.imageUrls.length > 0 ? job.imageUrls[0] : job.imageUrl;
-              const totalImages = (job.imageUrls?.length || 0) + (job.imageUrl && !job.imageUrls?.includes(job.imageUrl) ? 1 : 0);
-              return (
-                <Link
-                  key={`firebase-${job.id}`}
-                  to={`/projects/${job.id}`}
-                  className="group cursor-pointer rounded-xl overflow-hidden shadow-lg relative aspect-[4/3] hover:shadow-2xl transition-shadow block"
-                >
-                  {firstImage ? (
-                    <>
-                      <img
-                        src={firstImage}
-                        alt={job.clientName}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                      />
-                      {totalImages > 1 && (
-                        <div className="absolute top-4 right-4 bg-ink/70 text-cream px-3 py-1.5 rounded-lg text-xs font-bold backdrop-blur-sm">
-                          {totalImages} {language === Language.EN ? "Photos" : "Fotos"}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gold/20 to-ink/20 flex items-center justify-center">
-                      <ImageIcon className="w-16 h-16 text-body/40" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10"></div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-cream p-6">
-                    <h3 className="font-serif text-2xl font-bold mb-2 drop-shadow-lg">{job.clientName}</h3>
-                    <p className="text-sm opacity-90 mb-1 drop-shadow flex items-center"><MapPin size={14} className="mr-1" />{job.address}</p>
-                    {job.description && <p className="text-xs opacity-80 mb-4 line-clamp-2 drop-shadow max-w-xs">{job.description}</p>}
-                    <button className="bg-gold hover:bg-gold-light text-ink px-6 py-2 rounded-lg font-semibold transition-all transform group-hover:scale-105">
-                      {t.portfolio.viewProject}
-                    </button>
-                  </div>
-                </Link>
-              );
-            })}
           </div>
         )}
 
-        {!loading && filteredProjects.length === 0 && firebaseJobs.length === 0 && (
+        {!loading && filteredProjects.length === 0 && (
           <div className="text-center py-20">
             <p className="text-body/60 text-lg">{language === Language.EN ? "No projects found." : "No se encontraron proyectos."}</p>
           </div>

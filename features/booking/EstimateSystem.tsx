@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Language, PreferredContact, Service } from '../../types';
 import { TRANSLATIONS, COMPANY } from '../../constants';
 import { getServices } from '../../services/db';
-import { submitInquiry, validatePhotos, isLikelySpam, MAX_PHOTOS } from '../../services/inquiries';
+import { submitInquiry, isLikelySpam } from '../../services/inquiries';
 import { trackEvent } from '../../services/analytics';
 import { getWhatsAppUrl, getTelUrl } from '../../services/contactLinks';
-import { Check, ChevronRight, ChevronLeft, X, Upload, Trash2, Phone, MessageCircle, Loader2, AlertTriangle } from 'lucide-react';
+import { Check, ChevronRight, ChevronLeft, X, Phone, MessageCircle, Loader2, AlertTriangle } from 'lucide-react';
 
 interface EstimateSystemProps {
   language: Language;
@@ -13,16 +13,11 @@ interface EstimateSystemProps {
   onClose: () => void;
 }
 
-interface PhotoDraft {
-  file: File;
-  previewUrl: string;
-}
-
 const ZIP_REGEX = /^\d{5}(-\d{4})?$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[+]?[\d\s().-]{7,20}$/;
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedServiceId, onClose }) => {
   const t = TRANSLATIONS[language].estimate;
@@ -41,9 +36,6 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
   // Step 3
   const [description, setDescription] = useState('');
   // Step 4
-  const [photos, setPhotos] = useState<PhotoDraft[]>([]);
-  const [photoErrors, setPhotoErrors] = useState<string[]>([]);
-  // Step 5
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -53,9 +45,8 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ referenceNumber: string; photosFailed?: number } | null>(null);
+  const [result, setResult] = useState<{ referenceNumber: string } | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -115,7 +106,7 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
     return Object.keys(e).length === 0;
   };
 
-  const validateStep5 = () => {
+  const validateStep4 = () => {
     const e: Record<string, string> = {};
     if (!name.trim()) e.name = t.errors.required;
     if (!phone.trim()) e.phone = t.errors.required;
@@ -126,40 +117,9 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
     return Object.keys(e).length === 0;
   };
 
-  // ---------------- Photo handling ----------------
-  const handleFileSelect = (fileList: FileList | null) => {
-    if (!fileList) return;
-    const files = Array.from(fileList);
-    const { valid, errors: validationErrors } = validatePhotos(files, photos.length);
-    if (validationErrors.length) {
-      setPhotoErrors(
-        validationErrors.map((e) => `${e.fileName}: ${e.reason === 'type' ? t.errors.fileType : t.errors.fileSize}`),
-      );
-    } else {
-      setPhotoErrors([]);
-    }
-    const drafts = valid.map((file) => ({ file, previewUrl: URL.createObjectURL(file) }));
-    setPhotos((prev) => [...prev, ...drafts].slice(0, MAX_PHOTOS));
-  };
-
-  const removePhoto = (index: number) => {
-    setPhotos((prev) => {
-      const next = [...prev];
-      URL.revokeObjectURL(next[index].previewUrl);
-      next.splice(index, 1);
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    // Cleanup object URLs on unmount.
-    return () => photos.forEach((p) => URL.revokeObjectURL(p.previewUrl));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // ---------------- Submit ----------------
-  const handleSubmit = async () => {
-    if (!validateStep5()) return;
+  const handleSubmit = () => {
+    if (!validateStep4()) return;
 
     if (isLikelySpam(honeypot, formOpenedAt.current)) {
       setSubmitError(t.errors.spam);
@@ -168,36 +128,30 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
 
     setSubmitting(true);
     setSubmitError(null);
-    setUploadProgress(0);
 
     try {
       const serviceLabel = selectedService?.title[language] || t.serviceOther;
-      const res = await submitInquiry(
-        {
-          customerName: name.trim(),
-          phone: phone.trim(),
-          email: email.trim(),
-          preferredContact,
-          bestTimeToContact: bestTime.trim(),
-          serviceId: serviceId || 'other',
-          serviceLabel,
-          zip: zip.trim(),
-          city: city.trim(),
-          description: description.trim(),
-          photos: photos.map((p) => p.file),
-          language,
-          source: 'website',
-        },
-        (percent) => setUploadProgress(percent),
-      );
+      const res = submitInquiry({
+        customerName: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        preferredContact,
+        bestTimeToContact: bestTime.trim(),
+        serviceLabel,
+        zip: zip.trim(),
+        city: city.trim(),
+        description: description.trim(),
+        language,
+      });
 
       trackEvent('estimate_completed', { serviceId, referenceNumber: res.referenceNumber });
-      setResult({ referenceNumber: res.referenceNumber, photosFailed: res.photosFailed });
-      setStep(6); // success
+      setResult({ referenceNumber: res.referenceNumber });
+      // Open the pre-filled email in the customer's mail client.
+      window.open(res.whatsappUrl, '_blank', 'noopener,noreferrer');
+      setStep(5); // success
     } catch (err) {
       console.error('Estimate submission failed:', err);
-      const isNetwork = err instanceof TypeError || (err as any)?.code === 'unavailable';
-      setSubmitError(isNetwork ? t.errors.network : t.errors.generic);
+      setSubmitError(t.errors.generic);
     } finally {
       setSubmitting(false);
     }
@@ -205,11 +159,11 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
 
   // ---------------- Renderers ----------------
   const renderProgress = () => {
-    const labels = [t.steps.service, t.steps.location, t.steps.project, t.steps.photos, t.steps.contact];
+    const labels = [t.steps.service, t.steps.location, t.steps.project, t.steps.contact];
     const currentLabel = labels[Math.min(step, TOTAL_STEPS) - 1];
     return (
       <div className="mb-6 mt-1 pr-8 sm:pr-9">
-        {/* Compact mobile view: avoids 5-label overflow colliding with close button */}
+        {/* Compact mobile view: avoids label overflow colliding with close button */}
         <div className="sm:hidden mb-2 text-[11px] font-bold uppercase tracking-wider text-primary">
           Step {Math.min(step, TOTAL_STEPS)} of {TOTAL_STEPS}: {currentLabel}
         </div>
@@ -371,73 +325,6 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
   const renderStep4 = () => (
     <div className="space-y-5">
       <div>
-        <h3 className="text-2xl font-serif font-bold text-ink">{t.step4Title}</h3>
-        <p className="text-sm text-gray-500 mt-1">{t.step4Sub}</p>
-      </div>
-
-      <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl py-8 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
-        <Upload className="text-primary mb-2" size={28} />
-        <span className="font-bold text-sm text-ink">{t.addPhotos}</span>
-        <span className="text-xs text-gray-400 mt-1">{t.maxPhotos}</span>
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
-          multiple
-          className="hidden"
-          disabled={photos.length >= MAX_PHOTOS}
-          onChange={(e) => {
-            handleFileSelect(e.target.files);
-            e.target.value = '';
-          }}
-        />
-      </label>
-
-      {photoErrors.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3 space-y-1">
-          {photoErrors.map((err, i) => (
-            <p key={i} className="text-xs text-red-600 flex items-center gap-1">
-              <AlertTriangle size={12} /> {err}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {photos.length > 0 && (
-        <div className="grid grid-cols-3 gap-2">
-          {photos.map((p, i) => (
-            <div key={i} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group">
-              <img src={p.previewUrl} alt={`upload-${i}`} className="w-full h-full object-cover" />
-              <button
-                type="button"
-                onClick={() => removePhoto(i)}
-                aria-label={t.remove}
-                className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-              >
-                <Trash2 size={12} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="flex justify-between pt-4 border-t border-gray-100">
-        <button type="button" onClick={goBack} className="text-gray-500 hover:text-ink font-medium px-2 flex items-center">
-          <ChevronLeft size={18} className="mr-1" /> {t.back}
-        </button>
-        <button
-          type="button"
-          onClick={() => goNext(4)}
-          className="bg-ink text-white px-8 py-3 rounded-xl font-bold flex items-center shadow-lg hover:shadow-xl transition-all"
-        >
-          {t.next} <ChevronRight size={18} className="ml-2" />
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderStep5 = () => (
-    <div className="space-y-5">
-      <div>
         <h3 className="text-2xl font-serif font-bold text-ink">{t.step5Title}</h3>
         <p className="text-sm text-gray-500 mt-1">{t.step5Sub}</p>
       </div>
@@ -521,15 +408,6 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
         </div>
       )}
 
-      {submitting && uploadProgress > 0 && (
-        <div className="space-y-1">
-          <p className="text-xs text-gray-500">{t.uploading} {uploadProgress}%</p>
-          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-primary transition-all duration-200" style={{ width: `${uploadProgress}%` }} />
-          </div>
-        </div>
-      )}
-
       <div className="flex justify-between pt-4 border-t border-gray-100">
         <button type="button" onClick={goBack} disabled={submitting} className="text-gray-500 hover:text-ink font-medium px-2 flex items-center disabled:opacity-50">
           <ChevronLeft size={18} className="mr-1" /> {t.back}
@@ -561,13 +439,11 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
             {t.reference}: <span className="font-mono font-bold text-gray-600">{result.referenceNumber}</span>
           </p>
         )}
-        {!!result?.photosFailed && result.photosFailed > 0 && (
-          <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3 max-w-sm mx-auto">
-            {language === Language.EN
-              ? `We saved your request, but ${result.photosFailed} photo(s) couldn't be uploaded. Feel free to text or email them directly.`
-              : `Guardamos tu solicitud, pero ${result.photosFailed} foto(s) no se pudieron subir. Puedes enviarlas por mensaje de texto o correo.`}
-          </p>
-        )}
+        <p className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mt-3 max-w-sm mx-auto">
+          {language === Language.EN
+            ? "We've opened WhatsApp with your request pre-filled — just hit send! Have photos of the project? Attach them right in the chat."
+            : 'Abrimos WhatsApp con tu solicitud lista — ¡solo envíala! ¿Tienes fotos del proyecto? Adjúntalas directamente en el chat.'}
+        </p>
       </div>
       <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
         <a
@@ -614,8 +490,7 @@ const EstimateSystem: React.FC<EstimateSystemProps> = ({ language, preselectedSe
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
         {step === 4 && renderStep4()}
-        {step === 5 && renderStep5()}
-        {step === 6 && renderSuccess()}
+        {step === 5 && renderSuccess()}
       </div>
     </div>
   );

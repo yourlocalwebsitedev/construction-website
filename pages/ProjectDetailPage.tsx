@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase.config';
 import { Language } from '../types';
-import { getProjects, isFirestoreUnavailable, markFirestoreUnavailable } from '../services/db';
+import { getProjects } from '../services/db';
 import { trackEvent } from '../services/analytics';
 import { ArrowLeft, MapPin, Calendar, X, Play } from 'lucide-react';
 
@@ -16,7 +14,6 @@ interface Job {
   imageUrl?: string;
   imageUrls?: string[]; // Multiple images
   videoUrl?: string;
-  createdAt: any;
 }
 
 interface ProjectDetailPageProps {
@@ -29,27 +26,19 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const [isStaticProject, setIsStaticProject] = useState(false);
 
   useEffect(() => {
     if (id) {
-      // Check if it's a static project (prefixed with 'static-')
-      if (id.startsWith('static-')) {
-        fetchStaticProject(id.replace('static-', ''));
-      } else {
-        fetchFirebaseJob(id);
-      }
+      fetchProject(id.replace(/^static-/, ''));
     }
   }, [id]);
 
-  const fetchStaticProject = async (projectId: string) => {
-    setIsStaticProject(true);
+  const fetchProject = async (projectId: string) => {
     try {
       const projects = await getProjects();
-      const project = projects.find(p => p.id === projectId);
-      
+      const project = projects.find((p) => p.id === projectId);
+
       if (project) {
-        // Convert static project to job format
         setJob({
           id: project.id,
           clientName: project.title[language],
@@ -57,42 +46,13 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
           description: project.description[language],
           date: project.completionDate,
           imageUrls: project.images,
-          createdAt: null
-        } as Job);
+        });
         trackEvent('project_view', { projectId: project.id, source: 'static' });
       } else {
         navigate('/projects');
       }
     } catch (error) {
-      console.error('Error fetching static project:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFirebaseJob = async (jobId: string) => {
-    setIsStaticProject(false);
-    if (isFirestoreUnavailable()) {
-      navigate('/projects');
-      setLoading(false);
-      return;
-    }
-    try {
-      const docRef = doc(db, 'jobs', jobId);
-      const docSnap = await Promise.race([
-        getDoc(docRef),
-        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('job fetch timed out')), 3000)),
-      ]);
-
-      if (docSnap.exists()) {
-        setJob({ id: docSnap.id, ...docSnap.data() } as Job);
-        trackEvent('project_view', { projectId: docSnap.id, source: 'firebase' });
-      } else {
-        navigate('/projects');
-      }
-    } catch (error) {
-      console.error('Error fetching job:', error);
-      markFirestoreUnavailable();
+      console.error('Error fetching project:', error);
       navigate('/projects');
     } finally {
       setLoading(false);
@@ -159,7 +119,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
           <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-4 leading-tight">
             {job.clientName}
           </h1>
-          
+
           <div className="flex flex-wrap gap-6 text-gray-600 mb-6">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-primary/10 rounded-lg">
@@ -187,7 +147,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
       <div className="max-w-7xl mx-auto px-4 pb-16">
         {(allImages.length > 0 || job.videoUrl) && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
+
             {/* Video Tile (if exists) - Same size as others */}
             {job.videoUrl && (
               <div className="relative group overflow-hidden rounded-2xl bg-black aspect-[4/3] shadow-lg hover:shadow-2xl transition-shadow">
@@ -268,7 +228,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ language }
 
       {/* Lightbox for Full-Size Images */}
       {lightboxImage && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setLightboxImage(null)}
         >
