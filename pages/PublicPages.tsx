@@ -28,6 +28,7 @@ import {
   MessageCircleMore,
   Brush,
   Wand2,
+  Handshake,
 } from "lucide-react";
 
 interface PageProps {
@@ -103,12 +104,14 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
       <section className="bg-cream py-8 px-4 border-b border-ink/5">
         <div className="max-w-6xl mx-auto grid grid-cols-3 gap-2 sm:gap-6">
           <TrustItem icon={<ShieldCheck size={26} />} title={t.home.trust.licensed} sub={COMPANY.licenseNumber || (language === Language.EN ? 'General Contractor' : 'Contratista General')} />
-          <TrustItem icon={<Award size={26} />} title={t.home.trust.warranty} sub={COMPANY.warrantyYears ? `${COMPANY.warrantyYears}-Year` : (language === Language.EN ? 'On qualifying work' : 'En trabajos calificados')} />
           <TrustItem
-            icon={<Star size={26} />}
+            icon={<Handshake size={26} />}
             title={t.home.trust.rating}
-            sub={COMPANY.googleRating ? `${COMPANY.googleRating}/5 · ${COMPANY.googleReviewCount}+ ${language === Language.EN ? 'reviews' : 'reseñas'}` : (language === Language.EN ? 'Read our reviews' : 'Lee nuestras reseñas')}
+            sub={t.home.trust.ratingSub}
+            titleClassName="text-sm sm:text-base md:text-lg"
+            href="https://scottsquality.com/"
           />
+          <TrustItem icon={<Award size={26} />} title={t.home.trust.warranty} sub={COMPANY.warrantyYears ? `${COMPANY.warrantyYears}-Year` : (language === Language.EN ? 'On qualifying work' : 'En trabajos calificados')} />
         </div>
         <div className="max-w-6xl mx-auto grid grid-cols-3 gap-3 mt-6 text-center">
           <MiniTrust label={t.home.trust.craftsmanship} />
@@ -387,15 +390,30 @@ export const HomePage: React.FC<PageProps> = ({ language, onBookClick }) => {
   );
 };
 
-const TrustItem: React.FC<{ icon: React.ReactNode; title: string; sub: string }> = ({ icon, title, sub }) => (
-  <div className="flex flex-col items-center text-center gap-2 p-3">
-    <div className="text-gold shrink-0">{icon}</div>
-    <div>
-      <div className="font-bold text-xs sm:text-sm md:text-base text-ink leading-tight">{title}</div>
-      <div className="text-[10px] sm:text-xs text-body/60">{sub}</div>
+const TrustItem: React.FC<{ icon: React.ReactNode; title: string; sub: string; titleClassName?: string; href?: string }> = ({ icon, title, sub, titleClassName, href }) => {
+  const content = (
+    <div className="flex flex-col items-center text-center gap-2 p-3">
+      <div className="text-gold shrink-0">{icon}</div>
+      <div>
+        <div className={`font-bold text-ink leading-tight ${titleClassName || 'text-xs sm:text-sm md:text-base'}`}>{title}</div>
+        <div className="text-[10px] sm:text-xs text-body/60">{sub}</div>
+      </div>
     </div>
-  </div>
-);
+  );
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block cursor-pointer transition-transform duration-200 hover:scale-110"
+      >
+        {content}
+      </a>
+    );
+  }
+  return content;
+};
 
 const MiniTrust: React.FC<{ label: string }> = ({ label }) => (
   <div className="bg-white border border-gold/20 rounded-lg py-3 px-2 text-[11px] sm:text-xs font-semibold text-ink">
